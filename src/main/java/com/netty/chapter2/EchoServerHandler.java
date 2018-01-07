@@ -25,14 +25,15 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
         System.out.println("Server received:" + in.toString(CharsetUtil.UTF_8));
 
-        ctx.write("哈哈 我收到了你的消息");
+        //需要将消息发送给客户端,write是异步的,在这个时间点上不会释放消息,消息在下面释放
+        ctx.write(Unpooled.copiedBuffer("哈哈,你好客户端", CharsetUtil.UTF_8));
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         System.out.println("channelReadComplete");
+        //消息在调用writeAndFlush时释放
         ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-        super.channelReadComplete(ctx);
     }
 
     @Override

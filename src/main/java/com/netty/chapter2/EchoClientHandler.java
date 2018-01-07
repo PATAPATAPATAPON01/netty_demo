@@ -10,7 +10,7 @@ import io.netty.util.CharsetUtil;
  * Created with IntelliJ IDEA.
  * User: za-lvjian
  * Date: 2018/1/5 16:44
- * DESC:
+ * DESC:  SimpleChannelInboundHandler负责释放保存该消息的bytebuf的内存引用
  */
 public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
@@ -26,6 +26,7 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception { //在到服务器的连接建立之后调用
 
+        //当通道是活动的时候发送一条消息
         ctx.writeAndFlush(Unpooled.copiedBuffer("Netty rocks!", CharsetUtil.UTF_8));
 
     }
