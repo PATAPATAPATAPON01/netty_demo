@@ -2,10 +2,10 @@ package com.netty.chapter2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.*;
 import io.netty.util.CharsetUtil;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,6 +34,10 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
         System.out.println("channelReadComplete");
         //消息在调用writeAndFlush时释放
         ctx.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+
+
+        EventLoop eventExecutors = ctx.channel().eventLoop();
+
     }
 
     @Override
@@ -41,5 +45,20 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 //        super.exceptionCaught(ctx, cause);
         cause.printStackTrace();
         ctx.close();
+        ctx.channel().writeAndFlush("").addListener(new ChannelFutureListener() {
+                                                        @Override
+                                                        public void operationComplete(ChannelFuture future) throws Exception {
+
+
+                                                            if (!future.isSuccess()) {
+
+                                                                Throwable throwable = future.cause();
+                                                                throwable.printStackTrace();
+
+                                                                future.channel().close();
+                                                            }
+                                                        }
+                                                    }
+        );
     }
 }

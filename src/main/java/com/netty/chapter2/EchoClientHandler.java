@@ -5,6 +5,8 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
+import io.netty.util.ReferenceCountUtil;
+import io.netty.util.ReferenceCounted;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,6 +23,34 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
     protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
 
         System.out.println("channelRead0 Client received: " + msg.toString(CharsetUtil.UTF_8));
+
+        ReferenceCountUtil.release(msg); //显示释放ByteBuf实例的内存
+
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+        System.out.println("调用了channelInActive");
+    }
+
+    @Override
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        super.channelRegistered(ctx);
+        System.out.println("调用了chanelRegistred");
+    }
+
+    @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        super.channelUnregistered(ctx);
+        System.out.println("调用了channelUnregistered");
+
+    }
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        super.handlerAdded(ctx);
+        System.out.println("调用了handlerAdded");
     }
 
     @Override
@@ -29,11 +59,20 @@ public class EchoClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
         //当通道是活动的时候发送一条消息
         ctx.writeAndFlush(Unpooled.copiedBuffer("Netty rocks!", CharsetUtil.UTF_8));
 
+        System.out.println("调用了channelActive");
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 
+        System.out.println("调用了exceptionCaught");
+
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+
+        super.channelReadComplete(ctx);
 
     }
 }

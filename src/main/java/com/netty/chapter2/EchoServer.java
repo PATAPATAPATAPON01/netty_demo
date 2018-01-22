@@ -3,11 +3,15 @@ package com.netty.chapter2;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
 
 import java.net.InetSocketAddress;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,7 +54,24 @@ public class EchoServer {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(handler);
+
+                            ChannelPipeline pipeline = ch.pipeline();
+
+
+                            pipeline.addLast(new DefaultEventExecutorGroup(10));
+
+                            pipeline.names();
+
+
+//                            pipeline.bind()
+
+
+//                            pipeline.get()
+
+//                            pipeline.context()
+
                         }
+
                     });
 
 
@@ -61,7 +82,7 @@ public class EchoServer {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            group.shutdownGracefully().sync();
+            group.shutdownGracefully().syncUninterruptibly();
         }
     }
 }

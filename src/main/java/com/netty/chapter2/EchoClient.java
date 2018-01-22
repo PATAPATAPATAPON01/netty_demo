@@ -1,6 +1,7 @@
 package com.netty.chapter2;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -57,7 +58,7 @@ public class EchoClient {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        new EchoClient("localhost",8888).start();
+        new EchoClient("localhost", 8888).start();
     }
 
 }
